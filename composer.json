@@ -1,0 +1,12 @@
+{
+  "name": "atelierhyper/hyper_acf_fields",
+  "description": "Hyper Acf Fields",
+  "type": "wordpress-plugin",
+  "authors": [
+    {
+      "name": "Atelier Hyper Inc.",
+      "email": "info@atelierhyper.com"
+    }
+  ],
+  "minimum-stability": "dev"
+}

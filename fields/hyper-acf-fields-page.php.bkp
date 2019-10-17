@@ -1,0 +1,80 @@
+<?php
+if( ! defined( 'ABSPATH' ) ) exit;
+
+if( !class_exists('hyper_acf_fields_page') ) :
+
+class hyper_acf_fields_page extends acf_field {
+
+	function __construct( $settings ) {
+		$this->name = 'page';
+		$this->label = 'Hyper/Page';
+		$this->category = 'basic';
+		$this->settings = $settings;
+
+    	parent::__construct();
+
+		// extra
+		add_action('wp_ajax_acf/fields/post_object/query',			array($this, 'ajax_query'));
+		add_action('wp_ajax_nopriv_acf/fields/post_object/query',	array($this, 'ajax_query'));
+	}
+
+	function render_field( $field ) {
+		global $wp_query, $wpdb;
+
+		// Change Field into a select
+		$field['type'] = 'select';
+		$field['ui'] = 1;
+		$field['ajax'] = 1;
+		$field['choices'] = [];
+
+		// load posts
+		// $posts = $wp_query->get_posts($field['value'], $field);
+		//
+		// if ($posts) {
+		// 	foreach($posts as $row) {
+		// 		$field['choices'][ $row->ID ] = $row->post_title;
+		// 		//print_r($field['choices']);
+		// 	}
+		// 	// foreach (array_keys($posts) as $i) {
+		// 	// 	// $post = acf_extract_var( $posts, $i );
+		// 	// 	// $field['choices'][ $post->ID ] = $this->get_post_title( $post, $field );
+		// 	// }
+		// }
+
+		// render
+		acf_render_field( $field );
+	}
+
+  	function render_field_settings( $field ) {
+		//print_r("BANNANE");
+		// default_value
+		acf_render_field_setting( $field, array(
+			'label'			=> __('Filter by Post Type','acf'),
+			'instructions'	=> '',
+			'type'			=> 'select',
+			'name'			=> 'post_type',
+			'choices'		=> acf_get_pretty_post_types(),
+			'multiple'		=> 1,
+			'ui'			=> 1,
+			'allow_null'	=> 1,
+			'placeholder'	=> __("All post types",'acf'),
+		));
+	}
+
+	/* !!!!!!!!! */
+	function format_value($value, $post_id, $field) {
+		$values = get_fields($value, true);
+
+        $new = [];
+        foreach(array_dot($values) as $k => $v):
+            array_set($new, $k, $v);
+        endforeach;
+
+		return 0;
+		//return ['id' => $value, 'acf' => $new];
+	}
+}
+
+new hyper_acf_fields_page( $this->settings );
+
+endif;
